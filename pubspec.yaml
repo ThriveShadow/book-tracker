@@ -41,6 +41,7 @@ dependencies:
   google_sign_in: ^6.2.2
   simple_barcode_scanner: ^0.2.5
   http: ^1.2.2
+  intl: ^0.20.1
 
 dev_dependencies:
   flutter_test:

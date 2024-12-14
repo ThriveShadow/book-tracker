@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:book_tracker/screens/auth.dart';
 import 'package:book_tracker/screens/new_book.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -108,7 +109,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 margin: const EdgeInsets.all(8),
                 child: ListTile(
                   title: Text(bookData['title'] ?? 'No Title'),
-                  subtitle: Text(bookData['author'] ?? 'Unknown'),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(bookData['author'] ?? 'Unknown'),
+                        Text(bookData['createdAt'] != null
+                          ? DateFormat('dd MMMM yyyy').format(
+                            (bookData['createdAt'] as Timestamp).toDate())
+                          : 'No Date'),
+                    ],
+                  ),
                   trailing: Text(bookData['status'] ?? 'Unknown'),
                   onTap: () {
                     showDialog(
