@@ -130,6 +130,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   return title.contains(_searchQuery);
                 }).toList();
 
+                books.sort((a, b) {
+                  final aData = a.data() as Map<String, dynamic>;
+                  final bData = b.data() as Map<String, dynamic>;
+                  final aDate = aData['createdAt'] as Timestamp;
+                  final bDate = bData['createdAt'] as Timestamp;
+                  return bDate.compareTo(aDate);
+                });
+
                 return ListView.builder(
                   itemCount: books.length,
                   itemBuilder: (context, index) {
