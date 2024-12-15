@@ -13,6 +13,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String _searchQuery = "";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,96 +81,129 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('users')
-            .doc(FirebaseAuth.instance.currentUser?.uid)
-            .collection('books')
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              onChanged: (value) {
+                setState(() {
+                  _searchQuery = value.toLowerCase();
+                });
+              },
+              decoration: InputDecoration(
+                hintText: 'Search books...',
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(FirebaseAuth.instance.currentUser?.uid)
+                  .collection('books')
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-          if (snapshot.hasError) {
-            return const Center(child: Text('Error loading books'));
-          }
+                if (snapshot.hasError) {
+                  return const Center(child: Text('Error loading books'));
+                }
 
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('No books found. Add a book!'));
-          }
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return const Center(
+                      child: Text('No books found. Add a book!'));
+                }
 
-          final books = snapshot.data!.docs;
+                var books = snapshot.data!.docs;
 
-          return ListView.builder(
-            itemCount: books.length,
-            itemBuilder: (context, index) {
-              final book = books[index];
-              final bookData = book.data() as Map<String, dynamic>;
-              return Card(
-                margin: const EdgeInsets.all(8),
-                child: ListTile(
-                  title: Text(bookData['title'] ?? 'No Title'),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(bookData['author'] ?? 'Unknown'),
-                        Text(bookData['createdAt'] != null
-                          ? DateFormat('dd MMMM yyyy').format(
-                            (bookData['createdAt'] as Timestamp).toDate())
-                          : 'No Date'),
-                    ],
-                  ),
-                  trailing: Text(bookData['status'] ?? 'Unknown'),
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text(bookData['title'] ?? 'No Title'),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                  'Author: ${bookData['author'] ?? 'Unknown'}'),
-                              Text(
-                                  'Status: ${bookData['status'] ?? 'Unknown'}'),
-                              Text('Note: ${bookData['note'] ?? 'Unknown'}'),
-                              Text('Price: ${bookData['price'] ?? 'Unknown'}'),
-                            ],
-                          ),
-                          actions: [
-                            ElevatedButton(
-                              onPressed: () async {
-                                final navigator = Navigator.of(context);
-                                await book.reference.delete();
-                                if (mounted) {
-                                  navigator.pop();
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    Colors.red, // Set the button color to red
-                              ),
-                              child: const Text('Delete'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('Close'),
-                            ),
+                // Filter books based on search query
+                books = books.where((book) {
+                  final bookData = book.data() as Map<String, dynamic>;
+                  final title = (bookData['title'] ?? '').toLowerCase();
+                  return title.contains(_searchQuery);
+                }).toList();
+
+                return ListView.builder(
+                  itemCount: books.length,
+                  itemBuilder: (context, index) {
+                    final book = books[index];
+                    final bookData = book.data() as Map<String, dynamic>;
+                    return Card(
+                      margin: const EdgeInsets.all(8),
+                      child: ListTile(
+                        title: Text(bookData['title'] ?? 'No Title'),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(bookData['author'] ?? 'Unknown'),
+                            Text(bookData['createdAt'] != null
+                                ? DateFormat('dd MMMM yyyy').format(
+                                    (bookData['createdAt'] as Timestamp)
+                                        .toDate())
+                                : 'No Date'),
                           ],
-                        );
-                      },
+                        ),
+                        trailing: Text(bookData['status'] ?? 'Unknown'),
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text(bookData['title'] ?? 'No Title'),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                        'Author: ${bookData['author'] ?? 'Unknown'}'),
+                                    Text(
+                                        'Status: ${bookData['status'] ?? 'Unknown'}'),
+                                    Text(
+                                        'Note: ${bookData['note'] ?? 'Unknown'}'),
+                                    Text(
+                                        'Price: ${bookData['price'] ?? 'Unknown'}'),
+                                  ],
+                                ),
+                                actions: [
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      final navigator = Navigator.of(context);
+                                      await book.reference.delete();
+                                      if (mounted) {
+                                        navigator.pop();
+                                      }
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.red,
+                                    ),
+                                    child: const Text('Delete'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('Close'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                      ),
                     );
                   },
-                ),
-              );
-            },
-          );
-        },
+                );
+              },
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
