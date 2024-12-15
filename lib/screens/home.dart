@@ -134,7 +134,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   final aData = a.data() as Map<String, dynamic>;
                   final bData = b.data() as Map<String, dynamic>;
                   final aDate = aData['createdAt'] as Timestamp;
-                  final bDate = bData['createdAt'] as Timestamp;
+                  final bDate = bData['createdAt'] != null
+                      ? bData['createdAt'] as Timestamp
+                      : Timestamp.now();
                   return bDate.compareTo(aDate);
                 });
 
