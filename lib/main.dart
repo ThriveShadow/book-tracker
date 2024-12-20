@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:book_tracker/screens/auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:book_tracker/screens/home.dart';
+import 'package:book_tracker/screens/expenses.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,6 +29,10 @@ class MyApp extends StatelessWidget {
       ),
       darkTheme: ThemeData.dark(),
       home: const AuthScreen(),
+      routes: {
+        '/home': (context) => const HomeScreen(),
+        '/expenses': (context) => const ExpensesScreen(),
+      },
     );
   }
 }
