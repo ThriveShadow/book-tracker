@@ -110,6 +110,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ? DateFormat('dd MMMM yyyy').format(
                                     (bookData['buyDate'] as Timestamp).toDate())
                                 : 'No Date'),
+                            Text(bookData['price'] != null
+                                ? 'Rp ${bookData['price']}'
+                                : 'No Price'),
                           ],
                         ),
                         trailing: Text(bookData['status'] ?? 'Unknown'),

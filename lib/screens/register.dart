@@ -99,11 +99,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(height: 50),
               const Center(
                 child: Icon(
-                  Icons.lock,
+                  Icons.bookmark_add,
                   size: 100,
                 ),
               ),
-              const SizedBox(height: 50),
+              const SizedBox(height: 30),
               const Text(
                 'Let\'s create an account!',
                 style: TextStyle(fontSize: 16.0),
@@ -131,7 +131,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 buttonText: 'Sign Up',
                 onTap: signUp,
               ),
-              const SizedBox(height: 50),
+              const SizedBox(height: 40),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 25.0),
                 child: Row(

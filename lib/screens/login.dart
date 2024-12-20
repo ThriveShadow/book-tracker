@@ -92,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 50),
               const Center(
                 child: Icon(
-                  Icons.lock,
+                  Icons.bookmark_add,
                   size: 100,
                 ),
               ),
