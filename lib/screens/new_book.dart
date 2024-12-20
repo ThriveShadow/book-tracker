@@ -19,6 +19,7 @@ class AddBookScreenState extends State<AddBookScreen> {
   final statusController = TextEditingController();
   final noteController = TextEditingController();
   final priceController = TextEditingController();
+  DateTime? buyDate;
   String result = '';
 
   @override
@@ -70,6 +71,21 @@ class AddBookScreenState extends State<AddBookScreen> {
     }
   }
 
+  Future<void> selectBuyDate(BuildContext context) async {
+    final pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+
+    if (pickedDate != null && pickedDate != buyDate) {
+      setState(() {
+        buyDate = pickedDate;
+      });
+    }
+  }
+
   void addBook() async {
     final title = titleController.text;
     final author = authorController.text;
@@ -111,9 +127,7 @@ class AddBookScreenState extends State<AddBookScreen> {
     final userDoc =
         FirebaseFirestore.instance.collection('users').doc(user.uid);
 
-    DocumentReference newBookRef = userDoc.collection('books').doc();
-
-    await newBookRef.set({
+    await userDoc.collection('books').add({
       'title': title,
       'author': author,
       'status': status,
@@ -121,6 +135,7 @@ class AddBookScreenState extends State<AddBookScreen> {
       'price': price,
       'isbn': isbn,
       'createdAt': FieldValue.serverTimestamp(),
+      'buyDate': buyDate,
     });
 
     // Pop the screen after adding the book
@@ -149,6 +164,25 @@ class AddBookScreenState extends State<AddBookScreen> {
               controller: authorController,
               decoration: const InputDecoration(
                   labelText: 'Author', border: OutlineInputBorder()),
+            ),
+            const SizedBox(height: 16),
+            GestureDetector(
+              onTap: () => selectBuyDate(context),
+              child: AbsorbPointer(
+                child: TextField(
+                  controller: TextEditingController(
+                      text: buyDate != null
+                          ? '${buyDate!.day}/${buyDate!.month}/${buyDate!.year}'
+                          : ''),
+                  decoration: InputDecoration(
+                    labelText: 'Buy Date',
+                    border: const OutlineInputBorder(),
+                    hintText: buyDate != null
+                        ? '${buyDate!.day}-${buyDate!.month}-${buyDate!.year}'
+                        : 'Select a date',
+                  ),
+                ),
+              ),
             ),
             const SizedBox(height: 16),
             Row(

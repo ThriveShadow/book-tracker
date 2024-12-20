@@ -133,9 +133,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 books.sort((a, b) {
                   final aData = a.data() as Map<String, dynamic>;
                   final bData = b.data() as Map<String, dynamic>;
-                  final aDate = aData['createdAt'] as Timestamp;
-                  final bDate = bData['createdAt'] != null
-                      ? bData['createdAt'] as Timestamp
+                  final aDate = aData['buyDate'] != null
+                      ? aData['buyDate'] as Timestamp
+                      : Timestamp.now();
+                  final bDate = bData['buyDate'] != null
+                      ? bData['buyDate'] as Timestamp
                       : Timestamp.now();
                   return bDate.compareTo(aDate);
                 });
@@ -153,10 +155,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(bookData['author'] ?? 'Unknown'),
-                            Text(bookData['createdAt'] != null
+                            Text(bookData['buyDate'] != null
                                 ? DateFormat('dd MMMM yyyy').format(
-                                    (bookData['createdAt'] as Timestamp)
-                                        .toDate())
+                                    (bookData['buyDate'] as Timestamp).toDate())
                                 : 'No Date'),
                           ],
                         ),
