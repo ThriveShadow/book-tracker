@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:book_tracker/widgets/drawer.dart';
+import 'package:intl/intl.dart';
 
 class ExpensesScreen extends StatefulWidget {
   const ExpensesScreen({super.key});
@@ -40,6 +41,11 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     selectedYear = DateTime.now().year.toString();
     fetchAvailableYears();
     fetchBudget();
+  }
+
+  String formatAmount(double amount) {
+    final formatter = NumberFormat.decimalPattern('id');
+    return formatter.format(amount);
   }
 
   // Fetch the available years when the user has books in their collection
@@ -195,13 +201,6 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     setState(() {
       totalExpenses = total;
     });
-  }
-
-  // Format double values to remove .0 if it is an integer
-  String formatAmount(double amount) {
-    return amount == amount.toInt()
-        ? amount.toInt().toString()
-        : amount.toStringAsFixed(2);
   }
 
   @override
