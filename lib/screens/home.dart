@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:book_tracker/screens/auth.dart';
+import 'package:book_tracker/widgets/drawer.dart';
 import 'package:book_tracker/screens/new_book.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
@@ -31,56 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ),
       ),
-      drawer: Drawer(
-        child: Column(
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.deepPurple,
-              ),
-              child: Center(
-                child: Text(
-                  'Book Tracker',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                  ),
-                ),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text('Home'),
-              onTap: () {
-                Navigator.of(context).pushNamed('/home');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.attach_money),
-              title: const Text('Expenses'),
-              onTap: () {
-                Navigator.of(context).pushNamed('/expenses');
-              },
-            ),
-            const Spacer(),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('Logout'),
-              onTap: () async {
-                final navigator = Navigator.of(context);
-                await FirebaseAuth.instance.signOut();
-                if (mounted) {
-                  navigator.pushReplacement(
-                    MaterialPageRoute(
-                      builder: (context) => const AuthScreen(),
-                    ),
-                  );
-                }
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: const CustomDrawer(),
       body: Column(
         children: [
           Padding(
