@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:book_tracker/widgets/my_button.dart';
 import 'package:book_tracker/widgets/my_textfield.dart';
 import 'package:book_tracker/widgets/square_tile.dart';
-//import 'package:google_sign_in/google_sign_in.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({
@@ -66,20 +66,20 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  // void signInWithGoogle() async {
-  //   final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
+  void signInWithGoogle() async {
+    final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
 
-  //   if (gUser == null) return;
+    if (gUser == null) return;
 
-  //   final GoogleSignInAuthentication gAuth = await gUser.authentication;
+    final GoogleSignInAuthentication gAuth = await gUser.authentication;
 
-  //   final credential = GoogleAuthProvider.credential(
-  //     accessToken: gAuth.accessToken,
-  //     idToken: gAuth.idToken,
-  //   );
+    final credential = GoogleAuthProvider.credential(
+      accessToken: gAuth.accessToken,
+      idToken: gAuth.idToken,
+    );
 
-  //   await FirebaseAuth.instance.signInWithCredential(credential);
-  // }
+    await FirebaseAuth.instance.signInWithCredential(credential);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   InkWell(
-                    onTap: () {}, //signInWithGoogle,
+                    onTap: signInWithGoogle,
                     child:
                         const SquareTile(imagePath: 'assets/images/google.png'),
                   ),

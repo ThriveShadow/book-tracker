@@ -90,7 +90,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     });
   }
 
-  // Fetch the user's monthly budget from Firebase
+  // Fetch user's monthly budget from Firebase
   Future<void> fetchBudget() async {
     final user = FirebaseAuth.instance.currentUser;
 
@@ -100,7 +100,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
         builder: (context) {
           return const AlertDialog(
             title: Text('Error'),
-            content: Text('No user is logged in.'),
+            content: Text('Not logged in.'),
           );
         },
       );
@@ -115,7 +115,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
       setState(() {
         monthlyBudget = data['monthlyBudget'].toDouble();
         budgetController.text =
-            monthlyBudget.toStringAsFixed(0); // Remove .0 from display
+            monthlyBudget.toStringAsFixed(0);
       });
     }
   }
@@ -148,7 +148,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     setState(() {
       monthlyBudget = budget;
       budgetController.text =
-          budget.toStringAsFixed(0); // Remove .0 from display
+          budget.toStringAsFixed(0);
     });
 
     // Recalculate expenses after updating budget
@@ -167,7 +167,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
         builder: (context) {
           return const AlertDialog(
             title: Text('Error'),
-            content: Text('No user is logged in.'),
+            content: Text('Not logged in.'),
           );
         },
       );
@@ -231,9 +231,6 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
               keyboardType: TextInputType.number,
               onChanged: (value) {
                 saveBudget(value); // Save budget automatically as user types
-              },
-              onSubmitted: (value) {
-                saveBudget(value); // Save budget when the user submits
               },
             ),
             const SizedBox(height: 16),
@@ -303,7 +300,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                       title: 'Rp ${formatAmount(totalExpenses)}',
                       color: isOverBudget
                           ? Colors.red
-                          : Colors.blue, // Red if over budget
+                          : Colors.blue,
                       radius: 60,
                     ),
                     PieChartSectionData(
@@ -312,7 +309,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                           'Rp ${formatAmount(monthlyBudget - totalExpenses)}',
                       color: isOverBudget
                           ? Colors.red.withOpacity(0.4)
-                          : Colors.grey, // Red if over budget
+                          : Colors.grey,
                       radius: 60,
                     ),
                   ],
@@ -324,7 +321,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
             const SizedBox(height: 16),
             Text(
               'Total Expenses: Rp ${formatAmount(totalExpenses)}',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
@@ -332,7 +329,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
             const SizedBox(height: 16),
             Text(
               'Remaining Budget: Rp ${formatAmount(monthlyBudget - totalExpenses)}',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
               ),
             ),
