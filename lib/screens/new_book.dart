@@ -8,7 +8,6 @@ import 'dart:convert';
 
 class AddBookScreen extends StatefulWidget {
   const AddBookScreen({super.key});
-
   @override
   AddBookScreenState createState() => AddBookScreenState();
 }
@@ -150,7 +149,7 @@ class AddBookScreenState extends State<AddBookScreen> {
       appBar: AppBar(
         title: const Text('Add Book'),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
@@ -228,6 +227,12 @@ class AddBookScreenState extends State<AddBookScreen> {
             ),
             const SizedBox(height: 16),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                minimumSize: const Size.fromHeight(50), // Full width button
+              ),
               onPressed: () async {
                 String? res = await SimpleBarcodeScanner.scanBarcode(
                   context,
@@ -247,19 +252,26 @@ class AddBookScreenState extends State<AddBookScreen> {
                   fetchBookInfo(result);
                 });
               },
-              child: const Text('Scan Barcode'),
+              child: const Text('Scan ISBN'),
             ),
             const SizedBox(
               height: 10,
             ),
-            Text('Scan Barcode Result: $result'),
+            Text('ISBN: $result'),
             const SizedBox(
               height: 10,
             ),
-            const Spacer(),
-            MyButton(
-              buttonText: 'Add Book!',
-              onTap: addBook,
+            const SizedBox(height: 75),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.purple,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                minimumSize: const Size.fromHeight(75), // Full width button
+              ),
+              onPressed: addBook,
+              child: const Text('Add Book!'),
             ),
           ],
         ),
